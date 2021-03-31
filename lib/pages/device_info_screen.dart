@@ -21,12 +21,26 @@ class _DeviceInfoScreenState extends State<DeviceInfoScreen> {
       body: SafeArea(
         child: Center(
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              StatusText(text: 'Device name: $_deviceName'),
-              StatusText(
-                text: 'The device is currently $_devicePower',
+              DataTable(
+                columns: [
+                  DataColumn(label: Text('Property')),
+                  DataColumn(label: Text('Detail')),
+                ],
+                rows: [
+                  DataRow(cells: [
+                    DataCell(Text('Device Name')),
+                    DataCell(Text(_deviceName))
+                  ]),
+                  DataRow(
+                    cells: [
+                      DataCell(Text('Device Power Status')),
+                      DataCell(Text(_devicePower))
+                    ],
+                  )
+                ],
               ),
               ElevatedButton(
                 onPressed: () => {
@@ -34,7 +48,8 @@ class _DeviceInfoScreenState extends State<DeviceInfoScreen> {
                     _devicePower = _devicePower == 'Off' ? 'On' : 'Off';
                   })
                 },
-                child: Text("Toggle Power on Device"),
+                child: Text(
+                    "Switch ${_devicePower == 'Off' ? 'On' : 'Off'} the Device"),
               ),
             ],
           ),
