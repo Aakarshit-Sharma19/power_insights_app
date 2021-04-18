@@ -17,6 +17,8 @@ class _HomePageState extends State<HomePage> {
         title: Text('Power Insights'),
       ),
       bottomNavigationBar: BottomNavigationBar(
+        elevation: 5,
+        currentIndex: _currentIndex,
         items: [
           BottomNavigationBarItem(
             icon: Icon(Icons.home_rounded),
