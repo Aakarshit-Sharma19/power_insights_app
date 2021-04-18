@@ -20,7 +20,7 @@ class StartScreen extends StatelessWidget {
               height: 10.0,
             ),
             ElevatedButton(
-              onPressed: () => Navigator.pushNamed(context, Routes.info),
+              onPressed: () => Navigator.pushNamed(context, Routes.login),
               child: Hero(
                 tag: login_tag,
                 child: Text(

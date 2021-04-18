@@ -14,46 +14,39 @@ class _DeviceInfoScreenState extends State<DeviceInfoScreen> {
   String _devicePower = 'Off';
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Device Status'),
-      ),
-      body: SafeArea(
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              DataTable(
-                columns: [
-                  DataColumn(label: Text('Property')),
-                  DataColumn(label: Text('Detail')),
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          DataTable(
+            columns: [
+              DataColumn(label: Text('Property')),
+              DataColumn(label: Text('Detail')),
+            ],
+            rows: [
+              DataRow(cells: [
+                DataCell(Text('Device Name')),
+                DataCell(Text(_deviceName))
+              ]),
+              DataRow(
+                cells: [
+                  DataCell(Text('Device Power Status')),
+                  DataCell(Text(_devicePower))
                 ],
-                rows: [
-                  DataRow(cells: [
-                    DataCell(Text('Device Name')),
-                    DataCell(Text(_deviceName))
-                  ]),
-                  DataRow(
-                    cells: [
-                      DataCell(Text('Device Power Status')),
-                      DataCell(Text(_devicePower))
-                    ],
-                  )
-                ],
-              ),
-              ElevatedButton(
-                onPressed: () => {
-                  setState(() {
-                    _devicePower = _devicePower == 'Off' ? 'On' : 'Off';
-                  })
-                },
-                child: Text(
-                    "Switch ${_devicePower == 'Off' ? 'On' : 'Off'} the Device"),
-              ),
+              )
             ],
           ),
-        ),
+          ElevatedButton(
+            onPressed: () => {
+              setState(() {
+                _devicePower = _devicePower == 'Off' ? 'On' : 'Off';
+              })
+            },
+            child: Text(
+                "Switch ${_devicePower == 'Off' ? 'On' : 'Off'} the Device"),
+          ),
+        ],
       ),
     );
   }

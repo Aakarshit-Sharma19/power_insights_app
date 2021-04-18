@@ -1,6 +1,10 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:power_insights/constants.dart';
 import 'package:power_insights/routes.dart';
+import 'package:http/http.dart' as http;
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -8,8 +12,30 @@ class LoginPage extends StatefulWidget {
 }
 
 class _State extends State<LoginPage> {
-  TextEditingController nameController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  String _email = '';
+  String _password = '';
+  final storage = new FlutterSecureStorage();
+
+  Future<void> login() async {
+    var response = await http.post(
+      Uri.parse(
+          'https://power-insights.herokuapp.com/api/accounts/api-auth-token/'),
+      body: {'username': _email, 'password': _password},
+    );
+    if (response.statusCode == 200) {
+      var body = jsonDecode(response.body);
+      storage.write(key: 'token', value: body['token']);
+      Navigator.pushNamed(context, Routes.home);
+      final snackBar = SnackBar(content: Text('Login Successful'));
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    } else if (response.statusCode == 400) {
+      final snackBar = SnackBar(
+          content: Text('Wrong Email or Password! Check and Try Again'));
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,12 +63,15 @@ class _State extends State<LoginPage> {
                 Container(
                   padding: EdgeInsets.all(10),
                   child: TextField(
-                    controller: nameController,
+                    controller: emailController,
                     decoration: InputDecoration(
                       floatingLabelBehavior: FloatingLabelBehavior.auto,
                       border: OutlineInputBorder(),
-                      labelText: 'User Name',
+                      labelText: 'Email Address',
                     ),
+                    onChanged: (String value) {
+                      _email = value;
+                    },
                   ),
                 ),
                 Container(
@@ -54,6 +83,9 @@ class _State extends State<LoginPage> {
                       border: OutlineInputBorder(),
                       labelText: 'Password',
                     ),
+                    onChanged: (String value) {
+                      _password = value;
+                    },
                   ),
                 ),
                 TextButton(
@@ -78,7 +110,7 @@ class _State extends State<LoginPage> {
                         return Colors.blue;
                       })),
                       onPressed: () {
-                        Navigator.pushNamed(context, Routes.insights);
+                        login();
                       },
                     )),
                 Container(

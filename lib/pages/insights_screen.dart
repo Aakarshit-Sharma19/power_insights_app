@@ -11,14 +11,7 @@ class InsightsScreen extends StatefulWidget {
 class _InsightsScreenState extends State<InsightsScreen> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Power Insights for March in KW'),
-      ),
-      body: SafeArea(
-        child: SimpleTimeSeriesChart(SimpleTimeSeriesChart._createSampleData()),
-      ),
-    );
+    return SimpleTimeSeriesChart(SimpleTimeSeriesChart._createSampleData());
   }
 }
 
