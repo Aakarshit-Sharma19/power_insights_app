@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:power_insights/pages/device_info_screen.dart';
-import 'package:power_insights/pages/home_page.dart';
-import 'package:power_insights/pages/insights_screen.dart';
-import 'package:power_insights/pages/login_page.dart';
+import 'package:power_insights/pages/home_screen.dart';
+import 'package:power_insights/pages/login_screen.dart';
+import 'package:power_insights/pages/daily_insights_screen.dart';
 import 'package:power_insights/pages/start_screen.dart';
 import 'package:power_insights/routes.dart';
 
@@ -22,7 +21,8 @@ class MyApp extends StatelessWidget {
       routes: {
         Routes.start: (context) => StartScreen(),
         Routes.login: (context) => LoginPage(),
-        Routes.home: (context) => HomePage(),
+        Routes.home: (context) => HomeScreen(),
+        Routes.dailyInsights: (context) => DailyInsightsScreen()
       },
       initialRoute: Routes.start,
     );

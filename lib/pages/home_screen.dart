@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:power_insights/pages/device_info_screen.dart';
 import 'package:power_insights/pages/insights_screen.dart';
+import 'package:power_insights/pages/daily_insights_screen.dart';
 
-class HomePage extends StatefulWidget {
+class HomeScreen extends StatefulWidget {
   @override
-  _HomePageState createState() => _HomePageState();
+  _HomeScreenState createState() => _HomeScreenState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomeScreenState extends State<HomeScreen> {
   List<Widget> _widgets = [InsightsScreen(), DeviceInfoScreen()];
   int _currentIndex = 0;
   @override

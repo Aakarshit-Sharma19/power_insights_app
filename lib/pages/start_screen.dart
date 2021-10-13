@@ -1,6 +1,8 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:power_insights/constants.dart';
 import 'package:power_insights/routes.dart';
+import 'package:power_insights/utilities/auth.dart';
 
 class StartScreen extends StatelessWidget {
   @override
@@ -20,11 +22,22 @@ class StartScreen extends StatelessWidget {
               height: 10.0,
             ),
             ElevatedButton(
-              onPressed: () => Navigator.pushNamed(context, Routes.login),
+              onPressed: () => verifyToken(context).then((isLoggedIn) {
+                if (isLoggedIn)
+                  Navigator.pushReplacementNamed(context, Routes.home);
+                else
+                  Navigator.pushReplacementNamed(context, Routes.login);
+              }).catchError((e) {
+                final snackBar = SnackBar(
+                    content:
+                        Text('Couldn\'t connect to the power insights servers.'
+                            'Check your internet connectivity.'));
+                ScaffoldMessenger.of(context).showSnackBar(snackBar);
+              }),
               child: Hero(
-                tag: login_tag,
+                tag: loginTag,
                 child: Text(
-                  'Login',
+                  'Start',
                   style: TextStyle(color: Colors.blue),
                 ),
               ),

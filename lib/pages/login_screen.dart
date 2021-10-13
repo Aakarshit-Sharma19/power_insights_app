@@ -1,10 +1,7 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:power_insights/constants.dart';
 import 'package:power_insights/routes.dart';
-import 'package:http/http.dart' as http;
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:power_insights/utilities/auth.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -16,24 +13,10 @@ class _State extends State<LoginPage> {
   TextEditingController passwordController = TextEditingController();
   String _email = '';
   String _password = '';
-  final storage = new FlutterSecureStorage();
-
-  Future<void> login() async {
-    var response = await http.post(
-      Uri.parse(
-          'https://power-insights.herokuapp.com/api/accounts/api-auth-token/'),
-      body: {'username': _email, 'password': _password},
-    );
-    if (response.statusCode == 200) {
-      var body = jsonDecode(response.body);
-      storage.write(key: 'token', value: body['token']);
-      Navigator.pushNamed(context, Routes.home);
-      final snackBar = SnackBar(content: Text('Login Successful'));
-      ScaffoldMessenger.of(context).showSnackBar(snackBar);
-    } else if (response.statusCode == 400) {
-      final snackBar = SnackBar(
-          content: Text('Wrong Email or Password! Check and Try Again'));
-      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  Future<void> attemptLogin() async {
+    bool isLoggedIn = await login(_email, _password, context);
+    if (isLoggedIn) {
+      Navigator.pushReplacementNamed(context, Routes.home);
     }
   }
 
@@ -51,7 +34,7 @@ class _State extends State<LoginPage> {
                     alignment: Alignment.center,
                     padding: EdgeInsets.all(10),
                     child: Hero(
-                      tag: login_tag,
+                      tag: loginTag,
                       child: Text(
                         'Login',
                         style: TextStyle(
@@ -110,7 +93,7 @@ class _State extends State<LoginPage> {
                         return Colors.blue;
                       })),
                       onPressed: () {
-                        login();
+                        attemptLogin();
                       },
                     )),
                 Container(

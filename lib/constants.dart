@@ -1,1 +1,1 @@
-final login_tag = 'pi';
+const loginTag = 'pi';
