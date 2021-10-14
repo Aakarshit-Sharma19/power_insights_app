@@ -1,8 +1,18 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:power_insights/utilities/network.dart';
-import 'dart:convert';
 import 'package:power_insights/utilities/store.dart';
+
+Future<void> addInterceptor() async {
+  final String token = await persistentStorage.read(key: 'token') ?? '';
+  if (token == '') return;
+  dio.interceptors.add(
+    InterceptorsWrapper(onRequest: (options, handler) {
+      options.headers['Authorization'] = 'Token $token';
+      handler.next(options);
+    }),
+  );
+}
 
 Future<bool> login(String email, String password, BuildContext context) async {
   Response response;
@@ -15,6 +25,7 @@ Future<bool> login(String email, String password, BuildContext context) async {
     persistentStorage.write(key: 'token', value: body['token']);
     final snackBar = SnackBar(content: Text('Login Successful'));
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    addInterceptor();
     return true;
   } else if (response?.statusCode == 400) {
     final snackBar =
@@ -36,6 +47,7 @@ Future<bool> verifyToken(BuildContext context) async {
     response = await dio.get('/verify_token/',
         options: Options(headers: {'Authorization': 'Token $token'}));
     if (response.statusCode == 204) {
+      addInterceptor();
       return true;
     }
     return true;

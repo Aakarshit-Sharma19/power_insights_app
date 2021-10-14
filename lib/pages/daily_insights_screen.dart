@@ -5,6 +5,7 @@ import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:mat_month_picker_dialog/mat_month_picker_dialog.dart';
 import 'package:power_insights/components/insights_chart.dart';
 import 'package:power_insights/models/power_consumption.dart';
+import 'package:power_insights/utilities/insights.dart';
 
 class DailyInsightsScreen extends StatefulWidget {
   @override
@@ -14,10 +15,30 @@ class DailyInsightsScreen extends StatefulWidget {
 class _DailyInsightsScreenState extends State<DailyInsightsScreen> {
   _DailyInsightsScreenState() {
     consideredDate = DateTime.now();
-    series = DailyConsumptionSeries();
+    series = DailyConsumptionSeries([]);
   }
   DateTime consideredDate;
   DailyConsumptionSeries series;
+
+  @override
+  void initState() {
+    super.initState();
+    getDailyData(consideredDate.month, consideredDate.year)
+        .then((consumptionData) {
+      if (consumptionData.length == 0) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+                'No data present for ${consideredDate.month}/${consideredDate.year}'),
+          ),
+        );
+      }
+      setState(() {
+        series = DailyConsumptionSeries(consumptionData);
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,13 +54,28 @@ class _DailyInsightsScreenState extends State<DailyInsightsScreen> {
                 onPressed: () {
                   showMonthPicker(
                           context: context,
-                          initialDate: DateTime.now(),
+                          initialDate: consideredDate,
                           firstDate: DateTime(2021, 6),
                           lastDate: DateTime.now())
                       .then((selectedDate) {
-                    this.setState(() {
-                      this.consideredDate = selectedDate;
-                    });
+                    if (selectedDate != null) {
+                      getDailyData(consideredDate.month, consideredDate.year)
+                          .then((consumptionData) {
+                        if (consumptionData.length == 0) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                  'No data present for ${selectedDate.month}/${selectedDate.year}'),
+                            ),
+                          );
+                        }
+                        setState(() {
+                          consideredDate = selectedDate;
+                          series = DailyConsumptionSeries(
+                              consumptionData as List<PowerConsumption>);
+                        });
+                      });
+                    }
                   });
                 },
                 child: Text('Select Year and Month'),
@@ -48,8 +84,9 @@ class _DailyInsightsScreenState extends State<DailyInsightsScreen> {
             ],
           ),
           Expanded(
-              // height: 500,
-              child: InsightsChart(series))
+            // height: 500,
+            child: InsightsChart(series),
+          )
         ],
       ),
     );
@@ -57,18 +94,15 @@ class _DailyInsightsScreenState extends State<DailyInsightsScreen> {
 }
 
 class DailyConsumptionSeries implements ConsumptionSeries {
+  final List<PowerConsumption> data;
+  DailyConsumptionSeries(this.data);
   List<charts.Series<PowerConsumption, DateTime>> getData() {
-    List<PowerConsumption> data = [];
-    Random random = new Random();
-    for (int i = 0; i < 10; i++) {
-      data.add(
-          new PowerConsumption(new DateTime(2021, 3, i), random.nextInt(50)));
-    }
+    print(data);
     return [
       new charts.Series<PowerConsumption, DateTime>(
-        id: 'Power in KW',
+        id: 'power_consumption',
         colorFn: (_, __) => charts.MaterialPalette.blue.shadeDefault,
-        domainFn: (PowerConsumption consumption, _) => consumption.time,
+        domainFn: (PowerConsumption consumption, _) => consumption.date,
         measureFn: (PowerConsumption consumption, _) => consumption.consumption,
         data: data,
       )
