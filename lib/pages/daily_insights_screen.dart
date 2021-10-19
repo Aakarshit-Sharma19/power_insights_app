@@ -1,7 +1,5 @@
-import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:mat_month_picker_dialog/mat_month_picker_dialog.dart';
 import 'package:power_insights/components/insights_chart.dart';
 import 'package:power_insights/models/power_consumption.dart';
@@ -15,10 +13,11 @@ class DailyInsightsScreen extends StatefulWidget {
 class _DailyInsightsScreenState extends State<DailyInsightsScreen> {
   _DailyInsightsScreenState() {
     consideredDate = DateTime.now();
-    series = DailyConsumptionSeries([]);
+    consumptionData = [];
   }
+
   DateTime consideredDate;
-  DailyConsumptionSeries series;
+  List<PowerConsumption> consumptionData;
 
   @override
   void initState() {
@@ -29,12 +28,13 @@ class _DailyInsightsScreenState extends State<DailyInsightsScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-                'No data present for ${consideredDate.month}/${consideredDate.year}'),
+                'No data present for ${consideredDate.month}/${consideredDate
+                    .year}'),
           ),
         );
       }
       setState(() {
-        series = DailyConsumptionSeries(consumptionData);
+        this.consumptionData = consumptionData;
       });
     });
   }
@@ -53,26 +53,27 @@ class _DailyInsightsScreenState extends State<DailyInsightsScreen> {
               TextButton(
                 onPressed: () {
                   showMonthPicker(
-                          context: context,
-                          initialDate: consideredDate,
-                          firstDate: DateTime(2021, 6),
-                          lastDate: DateTime.now())
+                      context: context,
+                      initialDate: consideredDate,
+                      firstDate: DateTime(2021, 6),
+                      lastDate: DateTime.now())
                       .then((selectedDate) {
                     if (selectedDate != null) {
-                      getDailyData(consideredDate.month, consideredDate.year)
+                      getDailyData(selectedDate.month, selectedDate.year)
                           .then((consumptionData) {
                         if (consumptionData.length == 0) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: Text(
-                                  'No data present for ${selectedDate.month}/${selectedDate.year}'),
+                                  'No data present for ${selectedDate
+                                      .month}/${selectedDate.year}'),
                             ),
                           );
                         }
                         setState(() {
+                          this.consumptionData =
+                          consumptionData as List<PowerConsumption>;
                           consideredDate = selectedDate;
-                          series = DailyConsumptionSeries(
-                              consumptionData as List<PowerConsumption>);
                         });
                       });
                     }
@@ -85,27 +86,10 @@ class _DailyInsightsScreenState extends State<DailyInsightsScreen> {
           ),
           Expanded(
             // height: 500,
-            child: InsightsChart(series),
+              child: InsightsChart(getData(consumptionData)),
           )
         ],
       ),
     );
-  }
-}
-
-class DailyConsumptionSeries implements ConsumptionSeries {
-  final List<PowerConsumption> data;
-  DailyConsumptionSeries(this.data);
-  List<charts.Series<PowerConsumption, DateTime>> getData() {
-    print(data);
-    return [
-      new charts.Series<PowerConsumption, DateTime>(
-        id: 'power_consumption',
-        colorFn: (_, __) => charts.MaterialPalette.blue.shadeDefault,
-        domainFn: (PowerConsumption consumption, _) => consumption.date,
-        measureFn: (PowerConsumption consumption, _) => consumption.consumption,
-        data: data,
-      )
-    ];
   }
 }
