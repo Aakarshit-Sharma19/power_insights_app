@@ -1,4 +1,3 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:power_insights/constants.dart';
 import 'package:power_insights/routes.dart';
@@ -22,12 +21,14 @@ class StartScreen extends StatelessWidget {
               height: 10.0,
             ),
             ElevatedButton(
-              onPressed: () => verifyToken(context).then((isLoggedIn) {
+              onPressed: () => verifyToken().then((isLoggedIn) {
                 if (isLoggedIn)
                   Navigator.pushReplacementNamed(context, Routes.home);
                 else
                   Navigator.pushReplacementNamed(context, Routes.login);
-              }).catchError((e) {
+              }).catchError((e, stacktrace) {
+                print(e);
+                print(stacktrace);
                 final snackBar = SnackBar(
                     content:
                         Text('Couldn\'t connect to the power insights servers.'

@@ -4,7 +4,7 @@ import 'package:power_insights/models/power_consumption.dart';
 
 class InsightsChart extends StatelessWidget {
   final bool animate;
-  final List<charts.Series<PowerConsumption, DateTime>> consumptionData;
+  final List<charts.Series<BasePowerConsumption, DateTime>> consumptionData;
   InsightsChart(this.consumptionData, {this.animate});
 
   @override
@@ -19,4 +19,3 @@ class InsightsChart extends StatelessWidget {
     );
   }
 }
-

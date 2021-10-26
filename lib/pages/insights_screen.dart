@@ -13,7 +13,11 @@ class InsightsScreen extends StatelessWidget {
               Navigator.of(context).pushNamed(Routes.dailyInsights);
             },
             child: Text('Daily Insights')),
-        TextButton(onPressed: () {}, child: Text('Monthly Insights')),
+        TextButton(
+            onPressed: () {
+              Navigator.of(context).pushNamed(Routes.monthlyInsights);
+            },
+            child: Text('Monthly Insights')),
       ],
     );
   }

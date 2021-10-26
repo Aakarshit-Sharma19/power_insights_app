@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:power_insights/pages/device_info_screen.dart';
 import 'package:power_insights/pages/insights_screen.dart';
-import 'package:power_insights/pages/daily_insights_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   @override

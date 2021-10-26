@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:power_insights/pages/home_screen.dart';
 import 'package:power_insights/pages/login_screen.dart';
 import 'package:power_insights/pages/daily_insights_screen.dart';
+import 'package:power_insights/pages/monthly_insights_screen.dart';
 import 'package:power_insights/pages/start_screen.dart';
 import 'package:power_insights/routes.dart';
 
@@ -22,7 +23,8 @@ class MyApp extends StatelessWidget {
         Routes.start: (context) => StartScreen(),
         Routes.login: (context) => LoginPage(),
         Routes.home: (context) => HomeScreen(),
-        Routes.dailyInsights: (context) => DailyInsightsScreen()
+        Routes.dailyInsights: (context) => DailyInsightsScreen(),
+        Routes.monthlyInsights: (context) => MonthlyInsightsScreen()
       },
       initialRoute: Routes.start,
     );

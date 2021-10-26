@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:power_insights/utilities/auth.dart';
 
 const headingStyle = TextStyle(
   fontSize: 30.0,
@@ -46,6 +47,8 @@ class _DeviceInfoScreenState extends State<DeviceInfoScreen> {
             child: Text(
                 "Switch ${_devicePower == 'Off' ? 'On' : 'Off'} the Device"),
           ),
+          ElevatedButton(
+              onPressed: () => logout(context), child: Text('Logout'))
         ],
       ),
     );
